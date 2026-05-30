@@ -82,6 +82,7 @@ export const useFinanceStore = create<FinanceState>()((set, get) => ({
     const { error } = await supabase.from('transactions').delete().eq('id', id);
     if (!error) {
       set((state) => ({ transactions: state.transactions.filter(t => t.id !== id) }));
+      toast.success("Transação excluída!");
     }
   },
 
@@ -100,7 +101,10 @@ export const useFinanceStore = create<FinanceState>()((set, get) => ({
   
   removeDebt: async (id) => {
     const { error } = await supabase.from('debts').delete().eq('id', id);
-    if (!error) set((state) => ({ debts: state.debts.filter(d => d.id !== id) }));
+    if (!error) {
+      set((state) => ({ debts: state.debts.filter(d => d.id !== id) }));
+      toast.success("Dívida excluída!");
+    }
   },
 
   addGoal: async (goal) => {
@@ -118,7 +122,10 @@ export const useFinanceStore = create<FinanceState>()((set, get) => ({
 
   removeGoal: async (id) => {
     const { error } = await supabase.from('goals').delete().eq('id', id);
-    if (!error) set((state) => ({ goals: state.goals.filter(g => g.id !== id) }));
+    if (!error) {
+      set((state) => ({ goals: state.goals.filter(g => g.id !== id) }));
+      toast.success("Meta excluída!");
+    }
   }
 }));
 

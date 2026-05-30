@@ -38,7 +38,7 @@ function TransacoesPage() {
     if (filter !== "all" && t.type !== filter) return false;
     if (q && !`${t.description} ${t.category}`.toLowerCase().includes(q.toLowerCase())) return false;
     return true;
-  }), [q, filter]);
+  }), [transactions, q, filter]);
 
   const grouped = useMemo(() => {
     const m = new Map<string, typeof transactions>();
