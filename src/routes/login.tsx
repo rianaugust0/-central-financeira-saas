@@ -15,30 +15,19 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
     try {
-      if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
-        if (error) throw error;
-        toast.success("Conta criada! Você já pode entrar.");
-        setIsSignUp(false);
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        if (error) throw error;
-        toast.success("Bem-vindo de volta!");
-        navigate({ to: "/" });
-      }
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+      toast.success("Bem-vindo de volta!");
+      navigate({ to: "/" });
     } catch (err: any) {
       toast.error(err.message || "Erro ao acessar a conta");
     } finally {
@@ -69,9 +58,9 @@ function LoginPage() {
         </div>
 
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-black tracking-tight">{isSignUp ? "Criar Império" : "Bem-vindo, Márcio!"}</h1>
+          <h1 className="text-2xl font-black tracking-tight">Bem-vindo, Márcio!</h1>
           <p className="text-sm text-muted-foreground mt-2">
-            {isSignUp ? "Inicie sua jornada de inteligência financeira." : "Acesso exclusivo ao seu controle financeiro."}
+            Acesso exclusivo ao seu controle financeiro.
           </p>
         </div>
 
@@ -104,19 +93,9 @@ function LoginPage() {
             disabled={loading}
             className="w-full h-12 mt-4 rounded-xl bg-gradient-primary text-primary-foreground font-bold shadow-glow hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
           >
-            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : (isSignUp ? "Criar Conta" : "Entrar")}
+            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Entrar"}
           </button>
         </form>
-
-        <div className="mt-8 text-center">
-          <button 
-            type="button" 
-            onClick={() => setIsSignUp(!isSignUp)} 
-            className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {isSignUp ? "Já tem uma conta? Entrar" : "Não tem conta? Criar agora"}
-          </button>
-        </div>
       </motion.div>
     </div>
   );
