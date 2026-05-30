@@ -3,7 +3,7 @@ import { PageHeader } from "@/components/AppShell";
 import { brl } from "@/lib/utils";
 import { categories } from "@/lib/constants";
 import { useFinanceStore } from "@/lib/store";
-import { Filter, Download, Plus, Search } from "lucide-react";
+import { Filter, Download, Plus, Search, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 
 export const Route = createFileRoute("/transacoes")({
@@ -14,6 +14,7 @@ export const Route = createFileRoute("/transacoes")({
 function TransacoesPage() {
   const transactions = useFinanceStore(s => s.transactions);
   const addTransaction = useFinanceStore(s => s.addTransaction);
+  const removeTransaction = useFinanceStore(s => s.removeTransaction);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<"all" | "income" | "expense">("all");
   const [showModal, setShowModal] = useState(false);
@@ -102,8 +103,13 @@ function TransacoesPage() {
                       </div>
                       <div className="text-[11px] text-muted-foreground">{tx.category} · {tx.source}</div>
                     </div>
-                    <div className={`text-sm font-semibold tabular-nums ${tx.type === "income" ? "text-success" : "text-foreground"}`}>
-                      {tx.type === "income" ? "+" : "−"} {brl(tx.amount)}
+                    <div className="flex items-center gap-4">
+                      <div className={`text-sm font-semibold tabular-nums ${tx.type === "income" ? "text-success" : "text-foreground"}`}>
+                        {tx.type === "income" ? "+" : "−"} {brl(tx.amount)}
+                      </div>
+                      <button onClick={() => removeTransaction(tx.id)} className="p-2 -mr-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors" title="Excluir">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     </div>
                   </li>
                 ))}

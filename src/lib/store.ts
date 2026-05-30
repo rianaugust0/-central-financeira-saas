@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { supabase } from "./supabase";
+import { toast } from "sonner";
 import { Transaction, Debt, Goal } from "./types";
 import { categories } from "./constants";
 
@@ -39,6 +40,11 @@ export const useFinanceStore = create<FinanceState>()((set, get) => ({
       supabase.from('debts').select('*').order('created_at', { ascending: false }),
       supabase.from('goals').select('*').order('created_at', { ascending: false })
     ]);
+
+    if (txRes.error || debtsRes.error || goalsRes.error) {
+      console.error("Erro na busca de dados:", txRes.error, debtsRes.error, goalsRes.error);
+      toast.error("Erro de conexão com o banco! Verifique se as tabelas foram criadas.");
+    }
       
     set({ 
       transactions: txRes.data || [],
@@ -63,8 +69,12 @@ export const useFinanceStore = create<FinanceState>()((set, get) => ({
       .select()
       .single();
       
-    if (!error && data) {
+    if (error) {
+      console.error("Erro ao inserir transação:", error);
+      toast.error("Erro no Banco de Dados: " + error.message);
+    } else if (data) {
       set((state) => ({ transactions: [data, ...state.transactions] }));
+      toast.success("Transação salva com sucesso!");
     }
   },
   
@@ -79,7 +89,13 @@ export const useFinanceStore = create<FinanceState>()((set, get) => ({
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) return;
     const { data, error } = await supabase.from('debts').insert([{ ...debt, user_id: session.user.id }]).select().single();
-    if (!error && data) set((state) => ({ debts: [data, ...state.debts] }));
+    if (error) {
+      console.error("Erro ao inserir dívida:", error);
+      toast.error("Erro no Banco de Dados: " + error.message);
+    } else if (data) {
+      set((state) => ({ debts: [data, ...state.debts] }));
+      toast.success("Dívida salva com sucesso!");
+    }
   },
   
   removeDebt: async (id) => {
@@ -91,7 +107,13 @@ export const useFinanceStore = create<FinanceState>()((set, get) => ({
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) return;
     const { data, error } = await supabase.from('goals').insert([{ ...goal, user_id: session.user.id }]).select().single();
-    if (!error && data) set((state) => ({ goals: [data, ...state.goals] }));
+    if (error) {
+      console.error("Erro ao inserir meta:", error);
+      toast.error("Erro no Banco de Dados: " + error.message);
+    } else if (data) {
+      set((state) => ({ goals: [data, ...state.goals] }));
+      toast.success("Meta salva com sucesso!");
+    }
   },
 
   removeGoal: async (id) => {

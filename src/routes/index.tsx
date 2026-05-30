@@ -26,6 +26,7 @@ function Dashboard() {
   const score = useFinancialScore();
   const debts = useFinanceStore(s => s.debts);
   const debtTotal = debts.reduce((a, b) => a + (b.total - b.paid), 0);
+  const debtPaid = debts.reduce((a, b) => a + b.paid, 0);
 
   return (
     <motion.div 
@@ -38,7 +39,7 @@ function Dashboard() {
     >
       <PageHeader
         eyebrow="Resumo de Elite"
-        title="Seu Império Financeiro"
+        title="Bem-vindo, Márcio"
         description="Monitoramento neural ativo. Controle absoluto sobre seu dinheiro."
       />
 
@@ -96,7 +97,7 @@ function Dashboard() {
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
         <motion.div variants={itemVariant} className="xl:col-span-2">
-          <EvolutionBlock />
+          <EvolutionBlock balance={t.balance} debtPaid={debtPaid} />
         </motion.div>
         <motion.div variants={itemVariant}>
           <WhereMoneyWent cats={cats} />
@@ -336,7 +337,9 @@ function ScoreCardPremium({ score }: { score: number }) {
   );
 }
 
-function EvolutionBlock() {
+function EvolutionBlock({ balance, debtPaid }: { balance: number; debtPaid: number }) {
+  const hasSavings = balance > 0;
+  const hasDebtPaid = debtPaid > 0;
   return (
     <div className="rounded-[2rem] p-6 sm:p-8 bg-card border border-border/30 shadow-card">
       <div className="flex items-center gap-3 mb-6">
@@ -353,15 +356,15 @@ function EvolutionBlock() {
         <div className="rounded-2xl p-5 border border-success/30 bg-success/5 relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform"><Target className="h-16 w-16" /></div>
           <div className="text-[10px] font-bold text-success uppercase tracking-widest mb-2">Economia Acumulada</div>
-          <div className="text-3xl font-black text-foreground mb-1">+ R$ 1.240</div>
-          <div className="text-xs font-semibold text-muted-foreground">Você economizou 22% a mais em Delivery este mês.</div>
+          <div className="text-3xl font-black text-foreground mb-1">{hasSavings ? `+ ${brl(balance)}` : "R$ 0,00"}</div>
+          <div className="text-xs font-semibold text-muted-foreground">{hasSavings ? "Você está no verde este mês. Continue assim!" : "Você ainda não tem economia acumulada."}</div>
         </div>
         
         <div className="rounded-2xl p-5 border border-primary/30 bg-primary/5 relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform"><Flame className="h-16 w-16" /></div>
           <div className="text-[10px] font-bold text-primary uppercase tracking-widest mb-2">Dívidas Reduzidas</div>
-          <div className="text-3xl font-black text-foreground mb-1">- R$ 450</div>
-          <div className="text-xs font-semibold text-muted-foreground">Sua dívida do cartão caiu consideravelmente.</div>
+          <div className="text-3xl font-black text-foreground mb-1">{hasDebtPaid ? `- ${brl(debtPaid)}` : "R$ 0,00"}</div>
+          <div className="text-xs font-semibold text-muted-foreground">{hasDebtPaid ? "Sua dívida caiu consideravelmente com os pagamentos." : "Nenhum pagamento de dívida registrado."}</div>
         </div>
       </div>
     </div>

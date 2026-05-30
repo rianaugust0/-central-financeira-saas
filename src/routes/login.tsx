@@ -69,9 +69,9 @@ function LoginPage() {
         </div>
 
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-black tracking-tight">{isSignUp ? "Criar Império" : "Acesso Restrito"}</h1>
+          <h1 className="text-2xl font-black tracking-tight">{isSignUp ? "Criar Império" : "Bem-vindo, Márcio!"}</h1>
           <p className="text-sm text-muted-foreground mt-2">
-            {isSignUp ? "Inicie sua jornada de inteligência financeira." : "Identifique-se para acessar o painel de controle."}
+            {isSignUp ? "Inicie sua jornada de inteligência financeira." : "Acesso exclusivo ao seu controle financeiro."}
           </p>
         </div>
 
