@@ -19,7 +19,7 @@ export function AppShell() {
     <div className="min-h-screen flex bg-background selection:bg-primary/30">
       <DesktopSidebar />
       
-      <main className="flex-1 min-w-0 flex flex-col relative">
+      <main className="flex-1 min-w-0 flex flex-col relative overflow-x-hidden">
         <TopBar />
         <div className="flex-1 px-4 sm:px-6 lg:px-10 py-6 pb-28 lg:pb-10 relative z-10">
           <Outlet />
